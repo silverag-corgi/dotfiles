@@ -1,0 +1,119 @@
+[user]
+    # Gitアカウント情報
+    name = Rem_
+    email = black.white.red.are.the.best@gmail.com
+[includeIf "gitdir:~/workspace/Git/business/"]
+    # 仕事用フォルダ配下の場合、Git設定ファイル(仕事用)に切り替える
+    path = ~/workspace/Git/private/config/dotfiles/dotfiles/.gitconfig-business
+[credential]
+    # 認証情報を保存する (24時間キャッシュする)
+    helper = cache --timeout=86400
+[safe]
+    # ディレクトリの安全性を保証する (全てのディレクトリ)
+    directory = *
+[core]
+    # 改行コードを自動的に変換する (チェックアウト=>元のまま,コミット=>Linuxの改行コードへの変換)
+    autocrlf = input
+    # `git status`を実行した際に日本語ファイル名をエンコードする (エンコードしない)
+    quotepath = false
+    # `git commit`などを実行した際に指定したエディタを開く
+    editor = code --wait
+[pager]
+    # `git branch`を実行した際にページャを使用せずに表示する
+    branch = false
+[commit]
+    # `git commit`を実行した際にテンプレートを表示する
+    template = ~/workspace/Git/private/git/git-commit-message-template/.git_commit_message_template
+[fetch]
+    # `git fetch`を実行した際にリモートで削除されたブランチをローカルでも削除する (削除する)
+    prune = true
+[push]
+    # `git push`を実行した際にブランチを自動的に指定する (現在のブランチを指定する)
+    default = current
+[rebase]
+    # `git rebase`を実行した際に自動的に`git stash`も実行する (実行する)
+    autostash = true
+[alias]
+    # エイリアス一覧を出力する
+    al = "!f() { cat ~/.gitconfig | sed -n '/\\[alias\\]/,/\\[end-alias\\]/p' | grep --color=auto -E '^\\s{4}#\\s.*|$'; }; f"
+    # メモ一覧を出力する
+    memo = "!f() { cat ~/.gitconfig | sed -n '/\\[memo\\]/,/\\[end-memo\\]/p' | grep --color=auto -E '^\\s{4}#\\s.*|$'; }; f"
+    # 直近のコミットログ15件を出力する (件数を指定する)
+    ll = log -n 15 --date=iso --decorate=short --abbrev=7 --pretty=format:'[%ad][%cd][%h]%Cgreen[%an]%Cred%d %Creset%s'
+    # 直近の操作ログ15件を出力する (件数を指定する)
+    rl = reflog -n 15 --date=iso
+    # 直前のコミットを変更する (著者日付を維持して、コミッター日付を現在日時に変更する)
+    amend = commit --amend
+    # 直前のコミットを変更する (著者日付やコミッター日付を現在日時に変更する)
+    amend-date = "!f() { git commit --amend --date=\"$(date +'%Y-%m-%d %H:%M:%S %Z')\"; }; f"
+    # 複数のコミットのコミッター日付を著者日付と同期する (コミットIDを指定する)
+    sync-date = rebase --committer-date-is-author-date
+    # 強制的にプッシュする
+    push-f = push --force-with-lease
+    # 強制的にプルする(softリセット)
+    pull-f = "!f() { \
+            CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD) || return $?; \
+            [ \"$CURRENT_BRANCH_NAME\" = HEAD ] && { echo 'error: detached HEAD'; return 1; }; \
+            CURRENT_REMOTE_NAME=$(git config --get \"branch.$CURRENT_BRANCH_NAME.remote\") || return $?; \
+            [ -z \"$CURRENT_REMOTE_NAME\" ] && { echo 'error: no remote configured'; return 1; }; \
+            git fetch \"$CURRENT_REMOTE_NAME\" || return $?; \
+            git reset --soft \"$CURRENT_REMOTE_NAME/$CURRENT_BRANCH_NAME\"; \
+        }; f"
+    # 強制的にプルする(hardリセット)
+    pull-f-hard = "!f() { \
+            CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD) || return $?; \
+            [ \"$CURRENT_BRANCH_NAME\" = HEAD ] && { echo 'error: detached HEAD'; return 1; }; \
+            CURRENT_REMOTE_NAME=$(git config --get \"branch.$CURRENT_BRANCH_NAME.remote\") || return $?; \
+            [ -z \"$CURRENT_REMOTE_NAME\" ] && { echo 'error: no remote configured'; return 1; }; \
+            git fetch \"$CURRENT_REMOTE_NAME\" || return $?; \
+            git reset --hard \"$CURRENT_REMOTE_NAME/$CURRENT_BRANCH_NAME\"; \
+        }; f"
+    # PRをチェックアウトする (リモート名とPR番号とローカルブランチ名を指定する)
+    checkout-pr = "!f() { \
+            REMOTE_NAME=\"$1\"; \
+            PR_NUMBER=\"$2\"; \
+            BRANCH_NAME=\"$3\"; \
+            [ -z \"$REMOTE_NAME\" ] && { echo 'usage: git checkout-pr <remote> <pr-number> <branch>'; return 1; }; \
+            [ -z \"$PR_NUMBER\" ] && { echo 'usage: git checkout-pr <remote> <pr-number> <branch>'; return 1; }; \
+            [ -z \"$BRANCH_NAME\" ] && { echo 'usage: git checkout-pr <remote> <pr-number> <branch>'; return 1; }; \
+            git fetch \"$REMOTE_NAME\" \"pull/$PR_NUMBER/head:$BRANCH_NAME\" || return $?; \
+            git checkout \"$BRANCH_NAME\"; \
+        }; f"
+    # PRのコミットを取得する (リモート名とPR番号を指定する)
+    pull-pr = "!f() { \
+            REMOTE_NAME=\"$1\"; \
+            PR_NUMBER=\"$2\"; \
+            [ -z \"$REMOTE_NAME\" ] && { echo 'usage: git pull-pr <remote> <pr-number>'; return 1; }; \
+            [ -z \"$PR_NUMBER\" ] && { echo 'usage: git pull-pr <remote> <pr-number>'; return 1; }; \
+            git pull \"$REMOTE_NAME\" \"pull/$PR_NUMBER/head\"; \
+        }; f"
+    # ファイルの変更を無視する (ファイルを指定する)
+    skip = "!f() { \
+            FILE_PATH=\"$1\"; \
+            [ -z \"$FILE_PATH\" ] && { echo 'usage: git skip <file>'; return 1; }; \
+            git update-index --skip-worktree -- \"$FILE_PATH\"; \
+        }; f"
+    # 変更を無視するファイルの一覧を出力する
+    ls-skips = "!f() { git ls-files -v | grep '^S'; }; f"
+    # ブランチをローカルとリモートの両方から削除する (ブランチ名を指定する)
+    branch-d = "!f() { \
+            BRANCH_NAME=\"$1\"; \
+            [ -z \"$BRANCH_NAME\" ] && { echo 'usage: git branch-d <branch>'; return 1; }; \
+            git branch -D \"$BRANCH_NAME\" || return $?; \
+            if git ls-remote --exit-code --heads origin \"$BRANCH_NAME\" >/dev/null 2>&1; then \
+                git push origin --delete \"$BRANCH_NAME\"; \
+            fi; \
+        }; f"
+[end-alias]
+[memo]
+    # リモートを追跡するブランチを別名で作成して切り替える (ローカルブランチ名とリモートブランチ名を指定する)
+    ## git checkout -b issues/1 origin/issues/1
+    ## git switch -c issues/1 --track origin/issues/1
+    # リモートを追跡しないブランチを別名で作成して切り替える (ローカルブランチ名とコミットIDを指定する)
+    ## git checkout -b commit/a123456 a123456
+    ## git switch -c commit/a123456 a123456
+    # リモートを追跡するブランチを同名で作成して切り替える (リモートブランチ名を指定する)
+    ## git switch --track origin/issues/1
+    # ブランチから切り離して一時的なブランチを作成して切り替える (コミットIDを指定する)
+    ## git switch --detach a123456
+[end-memo]

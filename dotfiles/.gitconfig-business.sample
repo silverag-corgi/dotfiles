@@ -1,0 +1,6 @@
+# Git設定ファイル(仕事用)
+
+[user]
+    # Gitアカウント情報
+    name = test
+    email = test@gmail.com
