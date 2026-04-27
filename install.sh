@@ -50,7 +50,12 @@ backup_file() {
   local target_path="$1"
 
   if [[ -e "${target_path}" || -L "${target_path}" ]]; then
-    local backup_path="${target_path}.$(date +%Y%m%d_%H%M%S).bak"
+    local ts
+    ts=$(date +%Y%m%d_%H%M%S)
+    local backup_dir="${HOME}/.dotfiles/${ts}"
+    local target_filename="$(basename "${target_path}")"
+    local backup_path="${backup_dir}/${target_filename}"
+    run_command mkdir -p "${backup_dir}"
     run_command mv "${target_path}" "${backup_path}"
     echo "INF: backed up ${target_path} to ${backup_path}."
   fi
