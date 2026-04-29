@@ -4,7 +4,7 @@
     email = black.white.red.are.the.best@gmail.com
 [includeIf "gitdir:~/workspace/Git/business/"]
     # 仕事用フォルダ配下の場合、Git設定ファイル(仕事用)に切り替える
-    path = ~/workspace/Git/private/config/dotfiles/dotfiles/.gitconfig-business
+    path = ~/.gitconfig-business
 [credential]
     # 認証情報を保存する (24時間キャッシュする)
     helper = cache --timeout=86400
