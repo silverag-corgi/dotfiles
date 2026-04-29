@@ -23,7 +23,7 @@
     branch = false
 [commit]
     # `git commit`を実行した際にテンプレートを表示する
-    template = ~/workspace/Git/private/git/git-commit-message-template/.git_commit_message_template
+    template = ~/.gitmessage
 [fetch]
     # `git fetch`を実行した際にリモートで削除されたブランチをローカルでも削除する (削除する)
     prune = true

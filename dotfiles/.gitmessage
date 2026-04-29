@@ -1,0 +1,24 @@
+
+
+# ##### commit message format #####
+# <commit type>: [issue number] <commit title>
+#
+# [body]
+#
+# [footer]
+#
+# ##### commit type #####
+# feat:     [MINOR] add or update a feature for the user
+# fix:      [PATCH] fix a bug for the user
+# perf:     [PATCH] improve performance
+# refactor: [PATCH] improve code (without changing external behavior)
+# style:    [PATCH] apply a format style (without affecting the meaning of the code)
+# build:    [PATCH] add or update the build system and external dependencies
+# test:     [PATCH] add or update tests
+# docs:     [PATCH] add or update documents
+# ci:       [PATCH] add or update CI configuration files and scripts
+# chore:    [PATCH] do chores excluding those mentioned above
+#
+# ##### references #####
+# https://www.conventionalcommits.org/ja/v1.0.0/
+# https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
