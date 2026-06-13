@@ -62,27 +62,27 @@ backup_file() {
 }
 
 link_file() {
-  local source_name="$1"
+  local source_path="$1"
   local target_path="$2"
 
   backup_file "${target_path}"
-  run_command ln -sf "${DOTFILES_DIR}/${source_name}" "${target_path}"
-  echo "INF: linked ${DOTFILES_DIR}/${source_name} to ${target_path}."
+  run_command ln -sf "${source_path}" "${target_path}"
+  echo "INF: linked ${source_path} to ${target_path}."
 }
 
 copy_file() {
-  local source_name="$1"
+  local source_path="$1"
   local target_path="$2"
 
   backup_file "${target_path}"
-  run_command cp "${DOTFILES_DIR}/${source_name}" "${target_path}"
-  echo "INF: copied ${DOTFILES_DIR}/${source_name} to ${target_path}."
+  run_command cp "${source_path}" "${target_path}"
+  echo "INF: copied ${source_path} to ${target_path}."
   echo "INF: you must update ${target_path}."
 }
 
-link_file ".bashrc" "${HOME}/.bashrc"
-link_file ".bash_aliases" "${HOME}/.bash_aliases"
-link_file ".gitconfig" "${HOME}/.gitconfig"
-copy_file ".gitconfig_business.sample" "${DOTFILES_DIR}/.gitconfig_business"
-link_file ".gitconfig_business" "${HOME}/.gitconfig_business"
-link_file ".gitmessage" "${HOME}/.gitmessage"
+link_file "${DOTFILES_DIR}/.bashrc" "${HOME}/.bashrc"
+link_file "${DOTFILES_DIR}/.bash_aliases" "${HOME}/.bash_aliases"
+link_file "${DOTFILES_DIR}/.gitconfig" "${HOME}/.gitconfig"
+copy_file "${DOTFILES_DIR}/.gitconfig_business.sample" "${DOTFILES_DIR}/.gitconfig_business"
+link_file "${DOTFILES_DIR}/.gitconfig_business" "${HOME}/.gitconfig_business"
+link_file "${DOTFILES_DIR}/.gitmessage" "${HOME}/.gitmessage"
