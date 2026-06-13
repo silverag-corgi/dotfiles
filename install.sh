@@ -83,5 +83,6 @@ copy_file() {
 link_file ".bashrc" "${HOME}/.bashrc"
 link_file ".bash_aliases" "${HOME}/.bash_aliases"
 link_file ".gitconfig" "${HOME}/.gitconfig"
-copy_file ".gitconfig_business.sample" "${HOME}/.gitconfig_business"
+copy_file ".gitconfig_business.sample" "${DOTFILES_DIR}/.gitconfig_business"
+link_file ".gitconfig_business" "${HOME}/.gitconfig_business"
 link_file ".gitmessage" "${HOME}/.gitmessage"
